@@ -88,6 +88,8 @@ int SensorConfig[][4] = {       // value, condition, Actuator, action
 };
 
 void printSettings(void){
+
+    // Print output to serial output
   Serial.println("The Sensors Configurations as follow:");
   for(int i=0; i<SENSOR_COUNT;i++){
     Serial.print(SerialVarList1[i]);
@@ -107,8 +109,35 @@ void printSettings(void){
   Serial.println("The Sensors Value as follow:");
   for(int i=0; i<SENSOR_COUNT;i++){
     Serial.print(SerialVarList1[i]);
+    
     Serial.print(" = ");
     Serial.println(getSensorValueList[i]());   
+  }
+
+
+    // Print output to file
+    myFile = SD.open("homework1.txt", FILE_WRITE);
+    myFile.println("The Sensors Configurations as follow:");
+  for(int i=0; i<SENSOR_COUNT;i++){
+    myFile.print(SerialVarList1[i]);
+    myFile.write((char)SensorConfig[i][1]);
+    myFile.print(SensorConfig[i][0]);
+    myFile.print(',');
+    myFile.print(SerialVarList2[SensorConfig[i][2]]);
+    myFile.print('=');
+    myFile.println(SensorConfig[i][3]);    
+  }
+  myFile.print('\n');
+  // Serial.print("SSID = ");
+  // Serial.print(ssid);
+  // Serial.print(", PSW = ");
+  // Serial.println(psw);
+  
+  myFile.println("The Sensors Value as follow:");
+  for(int i=0; i<SENSOR_COUNT;i++){
+    myFile.print(SerialVarList1[i]);
+    myFile.print(" = ");
+    myFile.println(getSensorValueList[i]());   
   }
 }
 
@@ -418,7 +447,10 @@ void setup()
     Serial.println("initialization completed.");
 
     myFile = SD.open("homework1.txt", FILE_WRITE);
-    if (!myFile) {
+    if (myFile) {
+        myFile.close();
+    }
+    else {
         Serial.println("error opening homework1.txt");
     }
 }
