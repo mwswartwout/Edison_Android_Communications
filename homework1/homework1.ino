@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <TH02_dev.h>
-
+#include <SD.h>
 
 #define CMDSTR_MAX_LEN (128)
 #define LOW_TEMP       (10)
@@ -64,6 +64,8 @@ const char* SerialVarList1[] = { "temp", "humi", "light", "uv", "pir", "ms","ssi
 const char* SerialVarList2[] = { "relay", "buzzer", "servo", "sleep", "psw"};
 enum ACTUATOR {RELAY=0,BUZZER,SERVO,SLEEP};
 enum SENSOR {TEMPER=0,HUMI,LIGHT,UV,PIR,MS};
+
+File myFile;
 
 pgetSensorValue getSensorValueList[]={
   getTempSensorValue, 
@@ -248,9 +250,9 @@ int parsecmd(char *cmd){
   if(op1=='\0' || op2=='\0') return 0; // Illegal operator name
   
   if(varindex1 == VAR1_COUNT-1 && varindex2 == VAR2_COUNT-1){
-    strcpy(ssid,pvarvalue1);
-    strcpy(psw,pvarvalue2);
-    isSSIDreconfiged = true;
+    //strcpy(ssid,pvarvalue1);
+    //strcpy(psw,pvarvalue2);
+    //isSSIDreconfiged = true;
   } 
   else if(varindex1 != VAR1_COUNT-1 && varindex2 != VAR2_COUNT-1) {
     int value1 = atoi(pvarvalue1), value2 = atoi(pvarvalue2);
@@ -539,10 +541,10 @@ void loop()
   if(isButtonPressed()) isBackLightOn = !isBackLightOn;
   
   //if reconfig WiFi SSID,reconnect.
-  if(isSSIDreconfiged==true) {
-    status = WL_IDLE_STATUS;
-    isSSIDreconfiged = false;
-  }
+  //if(isSSIDreconfiged==true) {
+  //  status = WL_IDLE_STATUS;
+  //  isSSIDreconfiged = false;
+  // }
     
   
 }
@@ -596,79 +598,79 @@ void printWifiStatus() {
 // handl wifi request
 void RequestHandler(){
   static unsigned long cur = millis();
-  if(status != WL_CONNECTED && *ssid != '\0' && *psw !='\0'){
-    if((millis()-cur) > 5000){
-      Serial.print("Attempting to connect to SSID: ");
-      Serial.println(ssid);
-      // Connect to WPA/WPA2 network. Change this line if using open or WEP network:    
-      status = WiFi.begin(ssid,psw);
-      cur = millis();
-    }
-  } else if(status==WL_CONNECTED) {
-    if(!serverconnected){
-      server.begin();
+  // if(status != WL_CONNECTED && *ssid != '\0' && *psw !='\0'){
+  //  if((millis()-cur) > 5000){
+  //    Serial.print("Attempting to connect to SSID: ");
+  //    Serial.println(ssid);
+  //    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:    
+  //    status = WiFi.begin(ssid,psw);
+  //    cur = millis();
+  //  }
+  //} else if(status==WL_CONNECTED) {
+  //  if(!serverconnected){
+  //    server.begin();
       // you're connected now, so print out the status:
-      printWifiStatus();
-      serverconnected = 1;
-    } else {
-      sendpage();
-    }
-  }
+  //    printWifiStatus();
+  //    serverconnected = 1;
+  //  } else {
+  //    sendpage();
+  //  }
+ // }
 }
 
 // send html to client
 void sendpage(){
    // listen for incoming clients
-  WiFiClient client = server.available();
-  if (client) {
-    Serial.println("new client");
+  // WiFiClient client = server.available();
+  // if (client) {
+  //  Serial.println("new client");
     // an http request ends with a blank line
-    boolean currentLineIsBlank = true;
-    while (client.connected()) {
-      if (client.available()) {
-        char c = client.read();
-        Serial.write(c);
+  //  boolean currentLineIsBlank = true;
+  //  while (client.connected()) {
+  //    if (client.available()) {
+  //      char c = client.read();
+  //      Serial.write(c);
         // if you've gotten to the end of the line (received a newline
         // character) and the line is blank, the http request has ended,
         // so you can send a reply
-        if (c == '\n' && currentLineIsBlank) {
+  //      if (c == '\n' && currentLineIsBlank) {
           // send a standard http response header
-          client.println("HTTP/1.1 200 OK");
-          client.println("Content-Type: text/html");
-          client.println("Connection: close");  // the connection will be closed after completion of the response
-          client.println("Refresh: 2");         // refresh the page automatically every 2 sec
-          client.println();
-          client.println("<!DOCTYPE HTML>");
-          client.println("<html>");
-          client.println("<title>Grove Indoor Environment Kit for Edison</title>"); 
-          client.println("<font face=\"Microsoft YaHei\" color=\"#0071c5\"/>");
-          client.println("<h1 align=\"center\">Grove Indoor Environment Kit for Edison</h1>");
-          client.print("<br />");
-          for(int i=0; i < SENSOR_COUNT; i++){
-            client.print("<h2 align=\"center\"><big>");
-            client.print(SerialVarList1[i]);
-            client.print(" = ");
-            client.print(SensorValue[i]); 
-            client.println("</big></h2>"); 
+   //       client.println("HTTP/1.1 200 OK");
+   //       client.println("Content-Type: text/html");
+   //       client.println("Connection: close");  // the connection will be closed after completion of the response
+   //       client.println("Refresh: 2");         // refresh the page automatically every 2 sec
+   //       client.println();
+   //       client.println("<!DOCTYPE HTML>");
+   //       client.println("<html>");
+   //       client.println("<title>Grove Indoor Environment Kit for Edison</title>"); 
+   //       client.println("<font face=\"Microsoft YaHei\" color=\"#0071c5\"/>");
+   //       client.println("<h1 align=\"center\">Grove Indoor Environment Kit for Edison</h1>");
+   //       client.print("<br />");
+   //       for(int i=0; i < SENSOR_COUNT; i++){
+   //         client.print("<h2 align=\"center\"><big>");
+   //         client.print(SerialVarList1[i]);
+   //         client.print(" = ");
+   //         client.print(SensorValue[i]); 
+   //         client.println("</big></h2>"); 
             //client.print("<br />");
-          }      
-          client.println("</html>");
-           break;
-        }
-        if (c == '\n') {
+   //       }      
+   //       client.println("</html>");
+   //        break;
+    //    }
+   //     if (c == '\n') {
           // you're starting a new line
-          currentLineIsBlank = true;
-        } else if (c != '\r') {
+   //       currentLineIsBlank = true;
+   //     } else if (c != '\r') {
           // you've gotten a character on the current line
-          currentLineIsBlank = false;
-        }
-      }
-    }
+   //       currentLineIsBlank = false;
+   //     }
+   //   }
+   // }
     // give the web browser time to receive the data
-    delay(1);
+   // delay(1);
     
     // close the connection:
-    client.stop();
-    Serial.println("client disonnected");
-  }
+   // client.stop();
+   // Serial.println("client disonnected");
+ // }
 }
