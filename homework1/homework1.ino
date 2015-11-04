@@ -408,8 +408,21 @@ void setup()
     
     Timer1.initialize(20000); // set a timer of length 2000 microseconds
     Timer1.attachInterrupt(timerIsr); // attach the service routine here
-    attachInterrupt(pinEncoder2,EncoderISR,FALLING);    
+    attachInterrupt(pinEncoder2,EncoderISR,FALLING);
+
+    Serial.print("Initializing SD Card...");
+    if (!SD.begin(4)) {
+        Serial.println("initialization failed!");
+        return;
+    }
+    Serial.println("initialization completed.");
+
+    myFile = SD.open("homework1.txt", FILE_WRITE);
+    if (!myFile) {
+        Serial.println("error opening homework1.txt");
+    }
 }
+
 void EncoderISR(){
     while(!digitalRead(pinEncoder2));
     if(digitalRead(pinEncoder1)==HIGH){
