@@ -14,6 +14,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -32,6 +33,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.Buffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -66,6 +75,15 @@ public class MainActivity extends Activity {
     private String mConnectedDeviceName = null;
 
 
+    private File HW3dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Assignment4");
+    private String HW3name = "Homework3.csv";
+
+    private File Homework3 = new File(HW3dir,HW3name);
+
+    private String first_row = "TimeStamp,sensor1,sensor2,sensor3,sensor4,...\n";
+
+
+
 
 
 
@@ -73,6 +91,20 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (!HW3dir.exists()){
+            HW3dir.mkdir();
+            if(!Homework3.exists()){
+                try {
+                    Homework3.createNewFile();
+                    BufferedWriter bfw1 = new BufferedWriter(new FileWriter(Homework3,true));
+                    bfw1.write(first_row);
+                    bfw1.close();
+                } catch (IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }
 
         mConversationView = (ListView) findViewById(R.id.in);
         mOutEditText = (EditText) findViewById(R.id.edit_text_out);
@@ -321,6 +353,17 @@ public class MainActivity extends Activity {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String mrowInput = timestamp+","+readMessage+"\n";
+                    try {
+
+                        BufferedWriter bfw = new BufferedWriter(new FileWriter(Homework3, true));
+                        bfw.write(mrowInput);
+                        bfw.close();
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
