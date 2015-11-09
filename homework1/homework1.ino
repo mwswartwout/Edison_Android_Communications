@@ -141,6 +141,8 @@ void printSettings(void){
     myFile.print(" = ");
     myFile.println(getSensorValueList[i]());   
   }
+
+  myFile.close();
 }
 
 void SerialRequestHandler(){
@@ -546,7 +548,7 @@ void loop()
   //  isSSIDreconfiged = false;
   // }
     
-  
+  printSettings();
 }
 
 int cmdstrInput(char *str){
