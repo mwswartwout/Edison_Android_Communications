@@ -61,16 +61,16 @@ class Profile(dbus.service.Object):
 
 		try:
 		    while True:
-		        data = server_sock.recv(1024)
-		        print("received: %s" % data)
+		        # data = server_sock.recv(1024)
+		        # print("received: %s" % data)
                         data = sound.read()
-                        print("received: %d" % data)
+                        print("sound: %d" % data)
                         data = moisture.read()
-                        print("received: %d" % data)
+                        print("moisture: %d" % data)
                         data = light.read()
-                        print("received: %d" % data)
+                        print("light: %d" % data)
                         data = uv.read()
-                        print("received: %d" % data)
+                        print("uv: %d" % data)
 			server_sock.send("looping back: %s\n" % data)
 		except IOError:
 		    pass
