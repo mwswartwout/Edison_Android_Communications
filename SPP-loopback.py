@@ -10,6 +10,32 @@ import uuid
 import dbus
 import dbus.service
 import dbus.mainloop.glib
+import mraa
+
+pinSound = A0
+pinMoisture = A1
+pinLight = A2
+pinUV = A3
+pinButton =0
+pinEncoder1 = 2
+pinEncoder2 = 3
+pinBuzzer = 4
+pinRelay = 5
+pinPIR = 7
+pinServo = 6
+
+sound = mraa.Gpio(pinSound)
+moisture = mraa.Gpio(pinMoisture)
+light = mraa.Gpio(pinLight)
+uv = mraa.Gpio(pinUV)
+button = mraa.Gpio(pinButton)
+encoder1 = mraa.Gpio(pinEncoder1)
+encoder2 = mraa.Gpio(pinEncoder1)
+buzzer = mraa.Gpio(pinBuzzer)
+relay = mraa.Gpio(pinRelay)
+pir = mraa.Gpio(pinPIR)
+servo = mraa.Gpio(pinServo)
+
 try:
   from gi.repository import GObject
 except ImportError:
@@ -44,6 +70,28 @@ class Profile(dbus.service.Object):
 		    while True:
 		        data = server_sock.recv(1024)
 		        print("received: %s" % data)
+                        data = sound.read()
+                        print("received: %d" % data)
+                        data = moisture.read()
+                        print("received: %d" % data)
+                        data = light.read()
+                        print("received: %d" % data)
+                        data = uv.read()
+                        print("received: %d" % data)
+                        data = button.read()
+                        print("received: %d" % data)
+                        data = encoder1.read()
+                        print("received: %d" % data)
+                        data = encoder2.read()
+                        print("received: %d" % data)
+                        data = buzzer.read()
+                        print("received: %d" % data)
+                        data = relay.read()
+                        print("received: %d" % data)
+                        data = pir.read()
+                        print("received: %d" % data)
+                        data = servo.read()
+                        print("received: %d" % data)
 			server_sock.send("looping back: %s\n" % data)
 		except IOError:
 		    pass
