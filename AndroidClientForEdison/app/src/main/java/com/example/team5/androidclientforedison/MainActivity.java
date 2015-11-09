@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
     private String mConnectedDeviceName = null;
 
 
-    private File HW3dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Assignment4");
+    private File HW3dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM+"/Assignment4");
     private String HW3name = "Homework3.csv";
 
     private File Homework3 = new File(HW3dir,HW3name);
@@ -85,22 +85,21 @@ public class MainActivity extends Activity {
 
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!HW3dir.exists()){
-            HW3dir.mkdir();
-            if(!Homework3.exists()){
+        if (!HW3dir.exists()) {
+            HW3dir.mkdirs();
+
+            if (!Homework3.exists()) {
                 try {
                     Homework3.createNewFile();
-                    BufferedWriter bfw1 = new BufferedWriter(new FileWriter(Homework3,true));
+                    BufferedWriter bfw1 = new BufferedWriter(new FileWriter(Homework3, true));
                     bfw1.write(first_row);
                     bfw1.close();
-                } catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
