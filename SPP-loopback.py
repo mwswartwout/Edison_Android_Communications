@@ -12,29 +12,22 @@ import dbus.service
 import dbus.mainloop.glib
 import mraa
 
-pinSound = A0
-pinMoisture = A1
-pinLight = A2
-pinUV = A3
-pinButton =0
-pinEncoder1 = 2
-pinEncoder2 = 3
-pinBuzzer = 4
-pinRelay = 5
-pinPIR = 7
-pinServo = 6
+pinSound = 0
+pinMoisture = 1
+pinLight = 2
+pinUV = 3
 
-sound = mraa.Gpio(pinSound)
-moisture = mraa.Gpio(pinMoisture)
-light = mraa.Gpio(pinLight)
-uv = mraa.Gpio(pinUV)
-button = mraa.Gpio(pinButton)
-encoder1 = mraa.Gpio(pinEncoder1)
-encoder2 = mraa.Gpio(pinEncoder1)
-buzzer = mraa.Gpio(pinBuzzer)
-relay = mraa.Gpio(pinRelay)
-pir = mraa.Gpio(pinPIR)
-servo = mraa.Gpio(pinServo)
+sound = mraa.Aio(pinSound)
+moisture = mraa.Aio(pinMoisture)
+light = mraa.Aio(pinLight)
+uv = mraa.Aio(pinUV)
+#button = mraa.Gpio(pinButton)
+#encoder1 = mraa.Gpio(pinEncoder1)
+#encoder2 = mraa.Gpio(pinEncoder1)
+#buzzer = mraa.Gpio(pinBuzzer)
+#relay = mraa.Gpio(pinRelay)
+#pir = mraa.Gpio(pinPIR)
+#servo = mraa.Gpio(pinServo)
 
 try:
   from gi.repository import GObject
